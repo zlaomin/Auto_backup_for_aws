@@ -1,0 +1,57 @@
+>Your program cannot possibly work for other people, as
+>the key name and security groups do not exist for
+>others.
+
+I misunderstand the assumption. As what was mentioned in Commands Manual. the ssh-key should be 'ec2-backup' rather than 'Yuchen Zeng'
+I also need to create a new security groups.
+
+>-h
+I should remember that "a usage statement" means how to use the script. In the past I thought it means disk usage. I will never make such mistake again.
+
+>Permissions 0644 for 'ec2-backup.pem' are too open.
+This was probably because i copied the key-file, from my another PC. But fixing permissions fixed the issue. ---stackoverflow
+Use chmod 400 ec2-backup.pem
+
+> utils.CryptographyDeprecationWarning
+>/usr/pkg/lib/python3.7/site-packages/cryptography/hazmat/bindings/openssl/binding.py:163: >CryptographyDeprecationWarning: OpenSSL version 1.0.1 is no longer supported by the> >OpenSSL project, please upgrade. A future version of cryptography will drop support for >it.
+>  utils.CryptographyDeprecationWarning
+This is because it the OpenSSL version is too old. But I do not think our user will allow our script to update it.
+
+
+Question:
+I had make the script sleep for 40s to waiting the aws boot. But sometimes it still not ready. How long should it sleep?
+It might be random. So, I make it sleep 100s to ensure it works.
+
+>dd: /dev/sda3: No space left on device
+>969825+0 records in
+>969824+0 records out
+>496549888 bytes transferred in 125.423 secs (3959001 bytes/sec)
+>tar: Failed write to archive volume: 1 (Broken pipe)
+
+>Why? The Volume is 1G, When I test it in a Volume with 10G, it also report No pace left >on device.
+>I put the data a bad wrong place(sd01). But Where is the right place?
+>I can not find the volume which I attached on the instance by df -h, I think that might >be it do not have file system. Where can I find it?
+
+It should in xbd2d, I put data in wrong place.
+
+ABOUT THE CODE
+
+environment variable is imported in code of Python. And not the environment variable can contain any number of options.
+
+>1654120+0 records in
+>1654120+0 records out
+>846909440 bytes transferred in 440.458 secs (1922792 bytes/sec)
+Back up will take a long time.
+
+NOTE:
+Read the manual of Homework carefully!!!
+The use python3.7 rather than python3 to use python installed by boot script
+This script must run on a instance that has aws credentials.  
+The Result of aws command can be JSON, use JSON rather than stander formate to process it.
+Beware that the output of command can be nothing. Direct transform it to JSON will be wrong. As for double check it. I maybe using try: except: is a better choice.
+When editing security groups, take care of the fact that there is not only OutBound but also Inbound.
+Add -o StrictHostKeyChecking=no in "ssh ...." In script. DO NOT FORGET IT AGAIN
+Use eval `ssh-agent -s` before ssh-add !!! I forgot it again
+Use "group_name = ''.join(random.sample(string.ascii_letters + string.digits, 8))" to get random name so it will not be conflict.
+The command for Makefile is make install
+Thanks for Robert, the name of vol changed. So, we should write it in xbd2d. the sector before d is read only. And dmesg command is very useful in FreeBDS.
